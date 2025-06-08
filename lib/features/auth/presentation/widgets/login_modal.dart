@@ -27,29 +27,6 @@ class _LoginModalState extends ConsumerState<LoginModal> {
   String? error;
 
   Future<void> _handleLogin() async {
-    // final isValid = _formKey.currentState?.validate() ?? false;
-    // if (!isValid) return;
-    //
-    // setState(() {
-    //   error = null;
-    //   isLoading = true;
-    // });
-
-    // try {
-    //   final login = ref.read(loginUseCaseProvider);
-    //   final (token, user) = await login(
-    //     loginController.text.trim(),
-    //     passwordController.text.trim(),
-    //   );
-    //   ref.read(authTokenProvider.notifier).state = token;
-    //   ref.read(userProvider.notifier).state = user;
-    //   await TokenStorage.saveToken(token);
-    //   Navigator.of(context).pop();
-    // } catch (e) {
-    //   setState(() => error = e.toString());
-    // } finally {
-    //   setState(() => isLoading = false);
-    // }
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) return;
 

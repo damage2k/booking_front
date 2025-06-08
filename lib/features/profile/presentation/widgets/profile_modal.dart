@@ -1,9 +1,13 @@
 import 'package:booking_front/features/auth/presentation/screens/login_launcher.dart';
+import 'package:booking_front/shared/ui/generic_success_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../shared/services/token_storage.dart';
+import '../../../../shared/types/result.dart';
+import '../../../../shared/ui/confirm_dialog.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
-import '../../../auth/presentation/widgets/login_modal.dart';
+import '../../../places/presentation/providers/booking_providers.dart';
+import '../../../places/presentation/providers/place_providers.dart';
 
 class ProfileModal extends ConsumerStatefulWidget {
   const ProfileModal({super.key});
@@ -86,9 +90,93 @@ class _ProfileModalState extends ConsumerState<ProfileModal> {
                 _infoField(label: 'Отчество', value: user.middleName ?? ''),
                 _infoField(label: 'Должность', value: user.position ?? ''),
                 _infoField(label: 'Команда', value: user.team?['name'] ?? '', hasArrow: true),
-              ] else
-                const Text('Раздел в разработке'),
+              ] else if (selectedTab == 1) ...[
+                ref.watch(bookingsProvider).when(
+                  loading: () => const CircularProgressIndicator(),
+                  error: (e, _) => Text('Ошибка: $e'),
+                  data: (bookings) {
+                    if (bookings.isEmpty) return const Text('Нет активных бронирований.');
 
+                    return Column(
+                      children: bookings.map((b) {
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 6),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(b.placeCode, style: const TextStyle(fontWeight: FontWeight.bold)),
+                                    Text(
+                                      b.bookingDate == DateTime.now().toString()
+                                          ? 'Сегодня'
+                                          : 'Завтра',
+                                      style: const TextStyle(color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.close, color: Colors.red),
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (_) => ConfirmDialog(
+                                      title: 'Отмена бронирования',
+                                      message: 'Вы уверены, что хотите отменить бронь?',
+                                      onCancel: () => Navigator.of(context).pop(),
+                                      onConfirm: () async {
+                                        final api = ref.read(placesApiProvider);
+                                        final result = await api.cancelBooking(b.id);
+
+                                        if (context.mounted) {
+                                          Navigator.of(context).pop(); // close confirm
+                                        }
+
+                                        switch (result) {
+                                          case Success():
+                                            ref.invalidate(bookingsProvider);
+                                            ref.invalidate(placesForDateProvider);
+                                            showDialog(
+                                              context: context,
+                                              builder: (_) =>  GenericSuccessDialog(
+                                                title: 'Успешно',
+                                                message: 'Бронирование отменено.',
+                                              ),
+                                            );
+                                            break;
+                                          case Failure(:final message):
+                                            showDialog(
+                                              context: context,
+                                              builder: (_) => AlertDialog(
+                                                title: const Text('Ошибка'),
+                                                content: Text(message),
+                                              ),
+                                            );
+                                        }
+                                      },
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+
+                      }).toList(),
+                    );
+                  },
+                )
+              ],
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,

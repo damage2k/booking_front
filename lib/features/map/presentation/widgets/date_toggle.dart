@@ -10,7 +10,10 @@ class DateToggle extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedDate = ref.watch(selectedDateProvider);
+
+    //final now = DateTime.now().add(Duration(days: 1));
     final now = DateTime.now();
+
 
     return Container(
       decoration: BoxDecoration(

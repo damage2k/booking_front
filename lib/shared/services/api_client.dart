@@ -31,7 +31,7 @@ class ApiClient {
       return 'http://localhost:8080';
     } else {
       // адрес твоего ПК в локальной сети
-      return 'http://192.168.0.116:8080';
+      return 'http://192.168.0.110:8080';
     }
   }
 }

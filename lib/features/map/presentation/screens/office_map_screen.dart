@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../auth/presentation/providers/auth_providers.dart';
+import '../../../meeting/presentation/widgets/meeting_booking_modal.dart';
 import '../../../places/data/place_positions.dart';
 import '../../../places/presentation/providers/place_providers.dart';
 import '../../../places/presentation/widgets/place_markers.dart';
@@ -134,6 +135,36 @@ class _OfficeMapScreenState extends ConsumerState<OfficeMapScreen> {
                                     isMobile: isMobile,
                                   ),
                                 ),
+                                Positioned(
+                                  top: imageHeight * 0.17,
+                                  left: imageWidth * 0.834,
+                                  child: MouseRegion(
+                                    cursor: SystemMouseCursors.click,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (_) => const MeetingRoomBookingModal(meetingRoomId: 1, roomName: 'MR1'),
+                                        );
+                                      },
+                                      child: Container(
+                                        width: isMobile ? 45 : 80,
+                                        height: isMobile ? 45 : 80,
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xFF15A696),
+                                          shape: BoxShape.circle,
+                                          boxShadow: [BoxShadow(blurRadius: 6, color: Colors.black26)],
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          'MR1',
+                                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: isMobile ? 12 : 18),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
                               ],
                             ),
                           ),

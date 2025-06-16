@@ -153,9 +153,6 @@ class _ProfileModalState extends ConsumerState<ProfileModal> {
               ],
             ),
           ),
-          hasArrow
-              ? const Icon(Icons.arrow_forward_ios, size: 16)
-              : const Icon(Icons.edit, size: 16, color: Colors.teal),
         ],
       ),
     );

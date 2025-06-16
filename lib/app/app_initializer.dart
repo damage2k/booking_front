@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../features/auth/data/datasources/auth_api.dart';
-import '../features/auth/data/models/user_model.dart';
 import '../features/auth/presentation/providers/auth_providers.dart';
 import '../shared/services/token_storage.dart';
 

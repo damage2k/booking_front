@@ -6,7 +6,9 @@ import '../../features/auth/presentation/widgets/login_modal.dart';
 import '../../features/profile/presentation/widgets/profile_modal.dart';
 
 class AppHeader extends ConsumerWidget {
-  const AppHeader({super.key});
+  final VoidCallback? onBurgerTap;
+
+  const AppHeader({super.key, this.onBurgerTap});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -29,6 +31,14 @@ class AppHeader extends ConsumerWidget {
           color: Colors.grey.shade200,
           child: Row(
             children: [
+              if (isMobile && onBurgerTap != null)
+                Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: IconButton(
+                    icon: const Icon(Icons.menu),
+                    onPressed: onBurgerTap,
+                  ),
+                ),
               Text(
                 currentMonthYear,
                 style: isMobile

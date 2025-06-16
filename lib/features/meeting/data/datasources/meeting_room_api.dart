@@ -133,4 +133,34 @@ class MeetingRoomsApi {
       return Failure(message.toString());
     }
   }
+
+  // Получение бронирований за период
+  Future<Result<List<MeetingRoomBooking>>> getBookingsForRange(
+     String startDate,
+     String endDate,
+  ) async {
+    try {
+      final token = await TokenStorage.getToken();
+      final response = await _dio.get(
+        '/api/bookings/rooms/filter',
+        queryParameters: {
+          'filterStartDate': startDate,
+          'filterEndDate': endDate,
+        },
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+        }),
+      );
+
+      final bookings = (response.data as List)
+          .map((json) => MeetingRoomBooking.fromJson(json))
+          .toList();
+
+      return Success(bookings);
+    } on DioException catch (e) {
+      final message =
+          e.response?.data['errorMessage'] ?? 'Ошибка загрузки бронирований';
+      return Failure(message.toString());
+    }
+  }
 }
